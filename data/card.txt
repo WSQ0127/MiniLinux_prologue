@@ -1,0 +1,6 @@
+cd 35
+mkdir 20
+mv 25
+rm 16
+echo 8
+sudo 23
