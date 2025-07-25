@@ -13,9 +13,7 @@ private:
     vector<string> hand;
     vector<int> path;
     int file_count = 3;
-    
     shared_ptr<map<string, int>> card_limits;
-
     static vector<string> load_card_pool() {
         vector<string> pool;
         ifstream infile("data/cards.txt");
@@ -35,7 +33,6 @@ private:
             }
             return pool;
         }
-        
         string name;
         int count;
         while(infile >> name >> count) {
@@ -45,11 +42,9 @@ private:
         }
         return pool;
     }
-
     void print_current_dir(Directory& dir) {
         Directory::Node* current = dir.get_node(path.back());
         if(!current) return;
-        
         cout << "\n当前目录 (" << current->name << ") 内容:\n";
         for(size_t i = 0; i < current->children.size(); ++i) {
             auto child = current->children[i];
@@ -59,7 +54,6 @@ private:
                  << endl;
         }
     }
-
 public:
     Player(int i, Directory& dir) : id(i), 
         card_limits(make_shared<map<string, int>>()) {
@@ -77,16 +71,12 @@ public:
             dir.echo(player_dir, id, "file" + to_string(j));
         }
     }
-
     Player(Player&&) = default;
     Player& operator=(Player&&) = default;
-    
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
-
     int get_id() const { return id; }
     int get_current_dir() const { return path.back(); }
-    
     void draw_cards(int n) {
         static vector<string> card_pool = [](){
             auto pool = load_card_pool();
@@ -99,7 +89,6 @@ public:
             hand.push_back(card_pool[index++]);
         }
     }
-
     void show_hand() {
         wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
         wstring msg = L"玩家 " + to_wstring(id) + L" 的手牌:\n";
@@ -108,22 +97,18 @@ public:
         }
         MessageBoxW(NULL, msg.c_str(), L"手牌", MB_OK);
     }
-
     bool play_card(const string& card, Directory& dir, map<string, int>& used_counts) {
         auto it = find(hand.begin(), hand.end(), card);
         if(it == hand.end()) {
             cout << "没有这张牌！\n";
             return false;
         }
-
         if(card_limits->at(card) != -1 && used_counts[card] >= card_limits->at(card)) {
             cout << card << " 本回合使用已达上限(" << card_limits->at(card) << "次)\n";
             return false;
         }
-
         bool sudo_used = (card == "sudo");
         string actual_card = card;
-        
         if(sudo_used) {
             cout << "选择要强化的指令: ";
             string target;
@@ -135,11 +120,9 @@ public:
             }
             actual_card = *it;
         }
-
         bool success = false;
         int current_dir = path.back();
         print_current_dir(dir);
-
         if(actual_card == "cd") {
             cout << "输入要进入的子目录编号(0返回上级): ";
             int choice;
@@ -182,7 +165,6 @@ public:
         else if(actual_card == "mv") {
             print_current_dir(dir);
             Directory::Node* current = dir.get_node(current_dir);
-            
             cout << "输入要移动的文件编号(多个编号用空格分隔，0返回上级): ";
             string input;
             cin.ignore();
@@ -196,11 +178,9 @@ public:
                     file_indices.push_back(index - 1);
                 }
             }
-        
             cout << "输入目标目录ID(0表示上级目录): ";
             int target_id;
             cin >> target_id;
-            
             bool all_success = !file_indices.empty();
             sort(file_indices.rbegin(), file_indices.rend());
             for(int idx : file_indices) {
@@ -210,7 +190,6 @@ public:
                     all_success = false;
                 }
             }
-        
             if(all_success) {
                 cout << "\n操作成功！更新后的目录状态:\n";
                 print_current_dir(dir);
@@ -234,7 +213,6 @@ public:
             
             success = all_success;
         }
-
         if(success) {
             hand.erase(find(hand.begin(), hand.end(), card));
             if(sudo_used) {
@@ -245,36 +223,30 @@ public:
         }
         return success;
     }
-
     void discard() {
         const int max_keep = max(5, file_count * 3);
         int to_discard = hand.size() - max_keep;
-        
         if(to_discard <= 0) return;
-
         cout << "\n=== 强制弃牌阶段 ===\n";
         cout << "手牌数: " << hand.size() << " (需保留≤" << max_keep << ")\n";
         cout << "必须弃掉 " << to_discard << " 张牌\n";
-
         while(to_discard > 0 && !hand.empty()) {
             show_hand();
             cout << "选择要弃掉的牌: ";
             string choice;
             cin >> choice;
-
             auto it = find(hand.begin(), hand.end(), choice);
             if(it != hand.end()) {
                 hand.erase(it);
                 to_discard--;
                 cout << "已弃掉: " << choice << " (剩余需弃: " << to_discard << ")\n";
-            } else {
+            }
+            else {
                 cout << "无效选择！\n";
             }
         }
     }
-
     bool is_eliminated() const { return file_count <= 0; }
-
     void show_status(Directory& dir) {
         cout << "玩家" << id << " 路径: ";
         for(int d : path) {
