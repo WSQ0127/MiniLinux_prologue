@@ -28,7 +28,7 @@ void game_loop() {
         while(1) {
             dire.print();
             p.show_status(dire);
-            p.show_hand();
+            p.show_cards();
             cout << "已使用: ";
             for(const auto& entry : used_counts) {
                 if(entry.second > 0) {
@@ -40,7 +40,7 @@ void game_loop() {
             cin >> cmd;
             if(cmd == "skip")
                 break;
-            if(!p.play_card(cmd, dire, used_counts)) {
+            if(!p.play_cards(cmd, dire, used_counts)) {
                 cout << "出牌失败！请重试\n";
             }
         }
