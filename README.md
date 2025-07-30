@@ -1,6 +1,8 @@
 ## 简介
 本项目由 [Sci_qud](https://wsq127.top)/[zMr](https://blog.517group.cn) 开发qwq。
 
+烂尾项目时隔半年开始写目前还没写完
+
 感谢 DeepSeek 对本项目做出的巨大贡献（（DS神力
 
 游戏名暂定为 `MiniLinux:prologue`
