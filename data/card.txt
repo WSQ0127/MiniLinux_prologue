@@ -1,6 +1,10 @@
-cd 35
-mkdir 20
-mv 25
-rm 16
-echo 8
-sudo 23
+cd 25
+mkdir 18
+mv 16
+rm 10
+echo 12
+sudo 10
+ls 12
+pwd 6
+chmod 6
+event 15
